@@ -1,0 +1,330 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>My Wishlist</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#0d0d0d;
+color:white;
+min-height:100vh;
+}
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 80px;
+background:#111;
+border-bottom:1px solid #222;
+}
+
+.logo{
+font-size:30px;
+font-weight:800;
+color:white;
+text-decoration:none;
+}
+
+.logo span{
+color:#e50914;
+}
+
+.nav-links{
+display:flex;
+gap:20px;
+}
+
+.nav-links a{
+color:white;
+text-decoration:none;
+font-weight:500;
+transition:.3s;
+}
+
+.nav-links a:hover{
+color:#e50914;
+}
+
+.page-title{
+text-align:center;
+margin:50px 0;
+font-size:40px;
+font-weight:700;
+}
+
+.page-title span{
+color:#e50914;
+}
+
+.movie-grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fill,minmax(250px,1fr));
+gap:30px;
+padding:20px 60px 60px;
+}
+
+.movie-card{
+background:#141414;
+border-radius:20px;
+overflow:hidden;
+text-decoration:none;
+color:white;
+transition:.4s;
+box-shadow:
+0 0 20px rgba(0,0,0,.4);
+}
+
+.movie-card:hover{
+transform:translateY(-10px);
+box-shadow:
+0 10px 30px rgba(229,9,20,.4);
+}
+
+.poster{
+height:350px;
+overflow:hidden;
+}
+
+.poster img{
+width:100%;
+height:100%;
+object-fit:cover;
+transition:.4s;
+}
+
+.movie-card:hover img{
+transform:scale(1.1);
+}
+
+.movie-info{
+padding:20px;
+}
+
+.movie-info h3{
+font-size:22px;
+margin-bottom:10px;
+}
+
+.genre{
+color:#bbb;
+margin-bottom:10px;
+}
+
+.btn-group{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.view-btn{
+flex:1;
+background:#e50914;
+padding:10px;
+border-radius:10px;
+text-align:center;
+color:white;
+text-decoration:none;
+font-weight:600;
+}
+.wishlist-btn{
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.wishlist-count{
+    background:#e50914;
+    color:white;
+    padding:4px 10px;
+    border-radius:20px;
+    margin-left:5px;
+}
+.remove-btn{
+flex:1;
+background:#333;
+padding:10px;
+border-radius:10px;
+text-align:center;
+color:white;
+text-decoration:none;
+font-weight:600;
+}
+
+.empty-state{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+height:60vh;
+}
+
+.empty-state h2{
+font-size:35px;
+margin-bottom:10px;
+}
+
+.empty-state p{
+color:#aaa;
+margin-bottom:20px;
+}
+
+.browse-btn{
+background:#e50914;
+padding:12px 25px;
+border-radius:10px;
+text-decoration:none;
+color:white;
+font-weight:600;
+}
+
+footer{
+text-align:center;
+padding:30px;
+background:#111;
+margin-top:50px;
+color:#aaa;
+}
+
+</style>
+
+</head>
+
+<body>
+<nav class="navbar">
+
+<a href="{% url 'movie_list' %}"
+   class="logo">
+Movie<span>Verse</span>
+</a>
+
+<div class="nav-links">
+
+<a href="{% url 'movie_list' %}">
+Home
+</a>
+
+<a href="{% url 'wishlist' %}" class="wishlist-btn">
+    ❤️ Wishlist
+    <span class="wishlist-count">
+        {{ wishlist_count }}
+    </span>
+</a>
+
+</div>
+
+</nav>
+
+<h1 class="page-title">
+
+❤️ My <span>Wishlist</span>
+
+</h1>
+
+{% if wishlist_items %}
+
+<div class="movie-grid">
+
+{% for item in wishlist_items %}
+
+<div class="movie-card">
+
+<div class="poster">
+
+{% if item.movie.posters.first %}
+<img src="{{ item.movie.posters.first.image.url }}">
+{% else %}
+<img src="{% static 'movie/images/default-poster.jpg' %}">
+{% endif %}
+
+</div>
+
+<div class="movie-info">
+
+<h3>{{ item.movie.title }}</h3>
+
+<p class="genre">
+{{ item.movie.genre }}
+</p>
+
+<p>
+⭐ {{ item.movie.average_rating }}
+</p>
+
+<div class="btn-group">
+
+<a href="{% url 'movie_detail' item.movie.id %}"
+   class="view-btn">
+
+View Movie
+
+</a>
+
+<a href="{% url 'remove_from_wishlist' item.movie.id %}"
+   class="remove-btn">
+
+🗑 Remove
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="empty-state">
+
+<h2>
+No Movies In Wishlist
+</h2>
+
+<p>
+Start adding your favourite movies.
+</p>
+
+<a href="{% url 'movie_list' %}"
+   class="browse-btn">
+
+Browse Movies
+
+</a>
+
+</div>
+
+{% endif %}
+
+<footer>
+
+© MovieVerse | Wishlist
+
+</footer>
+
+</body>
+</html>

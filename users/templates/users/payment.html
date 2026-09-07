@@ -1,0 +1,304 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Payment - MovieVerse</title>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:
+            linear-gradient(
+                rgba(0,0,0,.8),
+                rgba(0,0,0,.8)
+            ),
+            url("{% static 'movie/images/hero-banner.jpg' %}");
+            background-size:cover;
+            background-position:center;
+        }
+
+        .payment-card{
+
+            width:500px;
+            max-width:90%;
+
+            background:#111;
+
+            padding:40px;
+
+            border-radius:25px;
+
+            text-align:center;
+
+            border:1px solid rgba(255,255,255,.08);
+
+            box-shadow:
+            0 0 40px rgba(255,23,68,.25);
+        }
+
+        .logo{
+
+            font-size:2.2rem;
+            font-weight:800;
+            margin-bottom:20px;
+        }
+
+        .logo span{
+            color:#ff1744;
+        }
+
+        h2{
+            margin-bottom:10px;
+        }
+
+        .subtitle{
+            color:#999;
+            margin-bottom:30px;
+        }
+
+        .amount{
+
+            font-size:3.5rem;
+            font-weight:800;
+
+            color:#ff1744;
+
+            margin-bottom:20px;
+        }
+
+        .booking-info{
+
+            background:#1b1b1b;
+
+            padding:20px;
+
+            border-radius:15px;
+
+            margin-bottom:30px;
+        }
+
+        .booking-info p{
+            margin:10px 0;
+            color:#ddd;
+        }
+
+        #rzp-button{
+
+            width:100%;
+
+            padding:16px;
+
+            border:none;
+
+            border-radius:12px;
+
+            background:#ff1744;
+
+            color:white;
+
+            font-size:18px;
+
+            font-weight:600;
+
+            cursor:pointer;
+
+            transition:.3s;
+        }
+
+        #rzp-button:hover{
+
+            transform:translateY(-4px);
+
+            box-shadow:
+            0 0 25px #ff1744,
+            0 0 50px rgba(255,23,68,.5);
+        }
+
+        #rzp-button:disabled{
+            opacity:.6;
+            cursor:not-allowed;
+            transform:none;
+            box-shadow:none;
+        }
+
+        .secure{
+
+            margin-top:20px;
+
+            color:#00ff88;
+
+            font-size:14px;
+        }
+
+        #error-box{
+            display:none;
+            margin-top:16px;
+            padding:12px;
+            border-radius:10px;
+            background:rgba(255,23,68,.12);
+            color:#ff6b81;
+            font-size:14px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="payment-card">
+
+    <div class="logo">
+        Movie<span>Verse</span>
+    </div>
+
+    <h2>Complete Your Payment</h2>
+
+    <p class="subtitle">
+        Secure Payment Powered By Razorpay
+    </p>
+
+    <div class="amount">
+        ₹{{ payment.amount }}
+    </div>
+
+    <div class="booking-info">
+
+        <p>
+            🎬 {{ payment.booking.movie.title }}
+        </p>
+
+        <p>
+            🏢 {{ payment.booking.schedule.theater.name }}
+        </p>
+
+        <p>
+            ⏰ {{ payment.booking.schedule.show_time }}
+        </p>
+
+    </div>
+
+    <button id="rzp-button">
+        Pay Now
+    </button>
+
+    <div id="error-box"></div>
+
+    <div class="secure">
+        🔒 100% Secure Payment
+    </div>
+
+</div>
+
+<script>
+
+var payButton = document.getElementById("rzp-button");
+var errorBox = document.getElementById("error-box");
+
+function showError(msg){
+    errorBox.textContent = msg;
+    errorBox.style.display = "block";
+}
+
+var options = {
+    prefill: {
+    name: "{{ request.user.username }}",
+    email: "{{ request.user.email }}"
+},
+
+    key: "{{ razorpay_key }}",
+
+    amount: "{{ order.amount }}",
+
+    currency: "INR",
+
+    name: "MovieVerse",
+
+    description: "Movie Ticket Booking",
+
+    order_id: "{{ order.id }}",
+
+    handler: function(response){
+        console.log("PAYMENT SUCCESS");
+        console.log(response);
+        alert(
+            "SUCCESS CALLBACK HIT\n\n" +
+            JSON.stringify(response)
+        );
+        window.location.href =
+        "{% url 'payment_success' %}" +
+        "?payment_id=" +
+        encodeURIComponent(response.razorpay_payment_id) +
+        "&order_id=" +
+        encodeURIComponent(response.razorpay_order_id) +
+        "&signature=" +
+        encodeURIComponent(response.razorpay_signature);
+    },
+
+    modal: {
+
+        ondismiss: function(){
+            payButton.disabled = false;
+            payButton.textContent = "Pay Now";
+            window.location.href =
+            "{% url 'payment_failed' payment.id %}";
+        }
+    },
+
+    theme: {
+        color: "#ff1744"
+    }
+};
+
+var rzp = new Razorpay(options);
+rzp.on('payment.failed', function(response){
+
+    console.log("FAILED CALLBACK HIT");
+    console.log(response);
+
+    alert(
+        "FAILED CALLBACK HIT\n\n" +
+        JSON.stringify(response)
+    );
+});
+rzp.on('payment.submit', function(response){
+    console.log("PAYMENT SUBMITTED");
+    console.log(response);
+});
+    //window.location.href =
+    //"{% url 'payment_failed' payment.id %}";
+
+
+payButton.onclick = function(e){
+    e.preventDefault();
+    payButton.disabled = true;
+    payButton.textContent = "Processing...";
+    rzp.open();
+};
+
+</script>
+
+</body>
+
+</html>

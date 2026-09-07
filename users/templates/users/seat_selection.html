@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Seats</title>
+
+    <style>
+
+        body{
+            background:#050505;
+            color:white;
+            font-family:Poppins,sans-serif;
+            text-align:center;
+            padding:40px;
+        }
+
+        h1{
+            margin-bottom:30px;
+        }
+
+        .screen{
+            width:80%;
+            height:70px;
+            margin:20px auto 60px;
+
+            background:white;
+            color:black;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            font-size:24px;
+            font-weight:bold;
+
+            border-radius:100px 100px 20px 20px;
+
+            transform:
+                perspective(300px)
+                rotateX(-35deg);
+
+            box-shadow:
+                0 0 40px white,
+                0 0 80px rgba(255,255,255,.5);
+        }
+
+        .legend{
+            margin-bottom:40px;
+        }
+
+        .legend span{
+            margin:0 20px;
+            font-size:18px;
+        }
+
+        .seat-row{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:8px;
+            margin-bottom:12px;
+        }
+
+        .row-label{
+            width:35px;
+            font-weight:bold;
+            color:#ff1744;
+            font-size:18px;
+        }
+
+        .aisle{
+            width:50px;
+        }
+
+        .seat{
+            width:45px;
+            height:45px;
+
+            border-radius:
+                10px 10px 6px 6px;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            font-size:11px;
+            font-weight:bold;
+
+            transition:.3s;
+        }
+
+        .available{
+            background:#1db954;
+            cursor:pointer;
+        }
+
+        .available:hover{
+            transform:scale(1.15);
+
+            box-shadow:
+                0 0 20px #1db954,
+                0 0 40px #1db954;
+        }
+
+        .reserved{
+            background:#ff9800;
+            cursor:not-allowed;
+        }
+
+        .booked{
+            background:#f44336;
+            cursor:not-allowed;
+        }
+
+        input[type=checkbox]{
+            display:none;
+        }
+
+        input[type=checkbox]:checked + .seat{
+            border:3px solid white;
+            transform:scale(1.15);
+        }
+
+        .buttons{
+            margin-top:40px;
+        }
+
+        .btn{
+            padding:15px 30px;
+            border:none;
+            border-radius:10px;
+            cursor:pointer;
+            margin:10px;
+            font-size:16px;
+            color:white;
+            text-decoration:none;
+            display:inline-block;
+        }
+
+        .reserve-btn{
+            background:#ff1744;
+        }
+
+        .confirm-btn{
+            background:#00c853;
+        }
+
+        .cancel-btn{
+            background:#ff9800;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<h1>Select Your Seats</h1>
+
+<div class="screen">
+    SCREEN
+</div>
+
+<div class="legend">
+    <span>🟢 Available</span>
+    <span>🟠 Reserved</span>
+    <span>🔴 Booked</span>
+</div>
+
+<form method="post">
+{% csrf_token %}
+{% for row, row_seats in seat_map.items %}
+
+<div class="seat-row">
+
+    <div class="row-label">
+        {{ row }}
+    </div>
+
+    {% for seat in row_seats %}
+
+        {% if seat.seat_number|slice:"1:" == "07" %}
+            <div class="aisle"></div>
+        {% endif %}
+
+        {% if seat.status == "available" %}
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="seats"
+                    value="{{ seat.id }}"
+                >
+
+                <div class="seat available">
+                    {{ seat.seat_number }}
+                </div>
+            </label>
+
+        {% elif seat.status == "reserved" %}
+
+            <div class="seat reserved">
+                {{ seat.seat_number }}
+            </div>
+
+        {% else %}
+
+            <div class="seat booked">
+                {{ seat.seat_number }}
+            </div>
+
+        {% endif %}
+
+    {% endfor %}
+
+</div>
+
+{% endfor %}
+<div class="buttons">
+
+    <button
+        type="submit"
+        class="btn reserve-btn">
+        Proceed to Payment
+    </button>
+
+
+    <a
+        href="{% url 'release_reserved_seats' %}"
+        class="btn cancel-btn">
+        Cancel Selection
+    </a>
+
+</div>
+
+</form>
+
+</body>
+</html>

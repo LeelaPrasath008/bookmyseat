@@ -1,0 +1,101 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Review</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background:#0d0d0d;
+            color:white;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .container{
+            width:600px;
+            background:#181818;
+            padding:40px;
+            border-radius:20px;
+            box-shadow:0 0 30px rgba(255,0,0,.2);
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:25px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:8px;
+        }
+
+        input,
+        textarea{
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            margin-bottom:20px;
+            background:#252525;
+            color:white;
+        }
+
+        button{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:10px;
+            background:#e50914;
+            color:white;
+            cursor:pointer;
+            font-size:16px;
+        }
+
+        button:hover{
+            background:#ff2d37;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Add Review</h1>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit">
+                Submit Review
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,392 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }}</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'movie/css/movie_detail.css' %}">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <a href="{% url 'movie_list' %}" class="logo">
+            Movie<span>Verse</span>
+        </a>
+
+        <div class="nav-links">
+            <a href="{% url 'movie_list' %}">Home</a>
+            <a href="#trailer">Trailer</a>
+            <a href="#reviews">Reviews</a>
+        </div>
+
+    </nav>
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+    <div class="hero-content">
+
+        <div class="movie-left">
+
+            <span class="badge">
+                {{ movie.certification }}
+            </span>
+
+            <h1>{{ movie.title }}</h1>
+
+            <div class="movie-meta">
+    <span>🎬 {{ movie.genre }}</span>
+    <span>🌍 {{ movie.language }}</span>
+    <span>⏱ {{ movie.duration }} mins</span>
+    <span>⭐ {{ movie.average_rating }}</span>
+
+    {% if movie.showschedule_set.first %}
+    <span>💰 ₹{{ movie.showschedule_set.first.ticket_price }}</span>
+    {% endif %}
+</div>
+
+            <p class="description">
+                {{ movie.description }}
+            </p>
+
+            <div class="button-group">
+
+                <a href="#trailer" class="watch-btn">
+                    ▶ Watch Trailer
+                </a>
+<a href="{% url 'add_to_wishlist' movie.id %}"
+class="review-btn">
+
+❤️ Add To Wishlist
+
+</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'add_review' movie.id %}" class="review-btn">
+                    ✍ Add Review
+                </a>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <div class="movie-right">
+
+            {% if movie.posters.first %}
+                <img src="{{ movie.posters.first.image.url }}" alt="{{ movie.title }}">
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+<!-- SHOW SCHEDULES -->
+
+<section class="details-section">
+
+    <h2>🎟 Book Tickets</h2>
+{% for schedule in movie.showschedule_set.all %}
+
+<div class="schedule-card">
+
+    <div class="schedule-info">
+        <h3>{{ schedule.theater.name }}</h3>
+
+        <p>📍 {{ schedule.theater.location }}</p>
+
+        <p>🕒 {{ schedule.show_time }}</p>
+
+        <p>💰 ₹{{ schedule.ticket_price }}</p>
+    </div>
+
+    <div class="schedule-action">
+        <a href="{% url 'seat_selection' schedule.id %}"
+           class="book-btn">
+            Select Seats
+        </a>
+    </div>
+
+</div>
+
+{% empty %}
+
+<h3>No Shows Available</h3>
+
+{% endfor %}
+        
+
+    </div>
+
+</section>
+    <!-- MOVIE DETAILS -->
+
+    <section class="details-section">
+
+        <h2>Movie Information</h2>
+
+        <div class="details-grid">
+
+            <div class="detail-card">
+                <h3>Genre</h3>
+                <p>{{ movie.genre }}</p>
+            </div>
+
+            <div class="detail-card">
+                <h3>Language</h3>
+                <p>{{ movie.language }}</p>
+            </div>
+
+            <div class="detail-card">
+                <h3>Duration</h3>
+                <p>{{ movie.duration }} mins</p>
+            </div>
+
+            <div class="detail-card">
+                <h3>Release Date</h3>
+                <p>{{ movie.release_date }}</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- TRAILER -->
+<section id="trailer" class="details-section">
+
+    <h2>Official Trailer</h2>
+
+    <div class="trailer-container">
+
+       
+
+<iframe
+    width="100%"
+    height="500"
+    src="{{ movie.trailer_url }}"
+    title="Movie Trailer"
+    frameborder="0"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen>
+</iframe>
+    </div>
+
+</section>
+    <!-- REVIEWS -->
+
+    <section id="reviews" class="details-section">
+
+        <h2>User Reviews</h2>
+
+        {% for review in reviews %}
+
+        <div class="review-card">
+
+            <div class="review-header">
+
+                <h4>{{ review.user.username }}</h4>
+
+                <span class="review-rating">
+                    ⭐ {{ review.rating }}/5
+                </span>
+
+            </div>
+
+            <p>{{ review.comment }}</p>
+
+            {% if review.verified_viewer %}
+                <small class="verified">
+                    ✔ Verified Viewer
+                </small>
+            {% endif %}
+
+            <br><br>
+
+            {% if user == review.user %}
+                <a href="{% url 'edit_review' review.id %}" class="watch-btn">
+                    Edit Review
+                </a>
+            {% endif %}
+
+            <a href="{% url 'report_review' review.id %}" class="watch-btn">
+                Report
+            </a>
+
+        </div>
+
+        {% empty %}
+
+        <div class="review-card">
+            <p>No reviews available.</p>
+        </div>
+
+        {% endfor %}
+
+    </section>
+
+    <!-- CAST -->
+
+    <section class="details-section">
+
+        <h2>Cast Members</h2>
+
+        <div class="cast-grid">
+
+            {% for actor in movie.cast.all %}
+
+            <div class="cast-card">
+
+                <div class="cast-avatar">
+                    {{ actor.name|slice:":1" }}
+                </div>
+
+                <h3>{{ actor.name }}</h3>
+
+                <p>{{ actor.role }}</p>
+
+            </div>
+
+            {% empty %}
+
+            <div class="cast-card">
+                <p>No Cast Members Found</p>
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    <!-- SIMILAR MOVIES -->
+<section class="details-section">
+
+    <h2>Similar Movies</h2>
+
+    <div class="cast-grid">
+
+        {% for m in similar_movies %}
+
+        <a href="{% url 'movie_detail' m.id %}"
+           class="movie-mini-card"
+           style="text-decoration:none;color:white;">
+
+            {% if m.posters.first %}
+                <img src="{{ m.posters.first.image.url }}"
+                     alt="{{ m.title }}">
+            {% endif %}
+
+            <div style="padding:15px;">
+                <h3>{{ m.title }}</h3>
+                <p>{{ m.genre }}</p>
+                <p>⭐ {{ m.average_rating }}</p>
+            </div>
+
+        </a>
+
+        {% empty %}
+
+        <div class="cast-card">
+            <p>No Similar Movies Found</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+    <!-- RECENT MOVIES -->
+
+<section class="details-section">
+
+    <h2>Recently Released</h2>
+
+    <div class="cast-grid">
+
+        {% for m in recent_movies %}
+
+        <a href="{% url 'movie_detail' m.id %}"
+           class="movie-mini-card"
+           style="text-decoration:none;color:white;">
+
+            {% if m.posters.first %}
+                <img src="{{ m.posters.first.image.url }}"
+                     alt="{{ m.title }}">
+            {% endif %}
+
+            <div style="padding:15px;">
+                <h3>{{ m.title }}</h3>
+                <p>{{ m.release_date }}</p>
+            </div>
+
+        </a>
+
+        {% empty %}
+
+        <div class="cast-card">
+            <p>No Recent Movies</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+    <!-- TRENDING -->
+<section class="details-section">
+
+    <h2>🔥 Trending Movies</h2>
+
+    <div class="cast-grid">
+
+        {% for m in trending_movies %}
+
+        <a href="{% url 'movie_detail' m.id %}"
+           class="movie-mini-card"
+           style="text-decoration:none;color:white;">
+
+            {% if m.posters.first %}
+                <img src="{{ m.posters.first.image.url }}"
+                     alt="{{ m.title }}">
+            {% endif %}
+
+            <div style="padding:15px;">
+                <h3>{{ m.title }}</h3>
+                <p>⭐ {{ m.average_rating }}</p>
+            </div>
+
+        </a>
+
+        {% empty %}
+
+        <div class="cast-card">
+            <p>No Trending Movies</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+    <footer>
+        <p>© MovieVerse | Watch. Review. Enjoy.</p>
+    </footer>
+
+</body>
+
+</html>

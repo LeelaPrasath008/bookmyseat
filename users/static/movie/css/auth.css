@@ -1,0 +1,72 @@
+body{
+    background:#050505;
+    font-family:'Poppins',sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+
+.auth-container{
+    width:400px;
+    background:#111;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:
+        0 0 30px rgba(255,23,68,.3);
+}
+
+.auth-container h2{
+    text-align:center;
+    color:#ff1744;
+    margin-bottom:25px;
+}
+
+.auth-container p{
+    margin-bottom:15px;
+}
+
+.auth-container label{
+    color:white;
+    display:block;
+    margin-bottom:5px;
+}
+
+.auth-container input{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#222;
+    color:white;
+    margin-bottom:15px;
+}
+
+.auth-btn{
+    width:100%;
+    padding:12px;
+    background:#ff1744;
+    border:none;
+    color:white;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.auth-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:
+        0 0 20px #ff1744;
+}
+
+.auth-link{
+    text-align:center;
+    margin-top:15px;
+}
+
+.auth-link a{
+    color:#ff1744;
+    text-decoration:none;
+}

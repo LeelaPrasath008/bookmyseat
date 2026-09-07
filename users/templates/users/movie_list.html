@@ -1,0 +1,493 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieVerse</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'movie/css/movie_list.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Movie<span>Verse</span>
+        </div>
+
+   <div class="nav-links">
+
+    <a href="#">Home</a>
+
+    <a href="#movies">
+        Movies
+    </a>
+
+    <a href="{% url 'wishlist' %}" class="wishlist-btn">
+        ❤️ Wishlist
+        <span class="wishlist-count">
+            {{ wishlist_count }}
+        </span>
+    </a>
+
+</div>
+
+{% if user.is_authenticated %}
+<div class="user-profile">
+
+    <div class="profile-trigger" onclick="toggleProfileMenu()">
+
+        <div class="profile-avatar">
+            {{ request.user.username|first|upper }}
+        </div>
+
+        <div class="profile-info">
+            <h4>{{ request.user.username }}</h4>
+            <p>{{ request.user.email }}</p>
+        </div>
+
+    </div>
+
+    <div class="profile-menu" id="profileMenu">
+
+        <a href="{% url 'booking_history' %}">
+            🎟 My Bookings
+        </a>
+
+        <a href="{% url 'wishlist' %}">
+            ❤️ Wishlist
+        </a>
+        {% if user.is_staff %}
+<a href="{% url 'admin_dashboard' %}">
+    📊Admin Dashboard
+</a>
+{% endif %}
+
+        <a href="{% url 'account' %}">
+            👤 Account
+        </a>
+
+        <form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="logout-btn">
+        🚪 Logout
+    </button>
+</form>
+    </div>
+
+</div>
+{% endif %}
+    </nav>
+
+    <section class="hero">
+
+        <div class="hero-bg">
+            <img src="{% static 'movie/images/hero-banner.jpg' %}" alt="">
+        </div>
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-wrapper">
+
+    <div class="hero-content">
+
+        <span class="hero-tag">
+            FEATURED MOVIES
+        </span>
+
+        <h1>
+            Discover Amazing Movies
+        </h1>
+
+        <p>
+            Watch blockbuster movies, trending releases and timeless classics.
+        </p>
+
+        <a href="#movies" class="hero-btn">
+            Explore Movies
+        </a>
+
+    </div>
+
+    <div class="featured-poster">
+
+        {% if trending_movies.0.posters.first %}
+        <img src="{{ trending_movies.0.posters.first.image.url }}">
+        {% endif %}
+
+    </div>
+
+</div>
+    </section>
+    <section class="stats-strip">
+
+    <div>
+        <h2>{{ movie_count }}+</h2>
+        <p>Movies</p>
+    </div>
+
+    <div>
+        <h2>{{ bookings_count }}+</h2>
+        <p>Bookings</p>
+    </div>
+
+    <div>
+        <h2>4.8★</h2>
+        <p>User Rating</p>
+    </div>
+
+</section>
+
+    <section class="filter-section">
+<div class="filter-header">
+    <h2>🎬 Find Your Next Movie</h2>
+    <p>Search, filter and discover the best movies.</p>
+</div>
+<form method="GET" class="filter-form">
+
+<input
+type="text"
+name="search"
+placeholder="Search Movies..."
+value="{{ request.GET.search }}">
+
+<select name="genre">
+
+<option value="">
+All Genres
+</option>
+
+{% for genre in genres %}
+
+<option
+value="{{ genre.id }}"
+{% if request.GET.genre == genre.id|stringformat:"s" %}
+selected
+{% endif %}
+>
+{{ genre.name }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<select name="language">
+
+<option value="">
+All Languages
+</option>
+
+{% for language in languages %}
+
+<option
+value="{{ language.id }}"
+{% if request.GET.language == language.id|stringformat:"s" %}
+selected
+{% endif %}
+>
+{{ language.name }}
+</option>
+
+{% endfor %}
+
+</select>
+<select name="rating">
+
+<option value="">
+Minimum Rating
+</option>
+
+<option value="1">1+</option>
+<option value="2">2+</option>
+<option value="3">3+</option>
+<option value="4">4+</option>
+
+</select>
+<input
+type="number"
+name="release_year"
+placeholder="Release Year">
+
+<select name="theater">
+
+<option value="">
+All Theaters
+</option>
+
+{% for theater in theaters %}
+
+<option value="{{ theater.id }}">
+{{ theater.name }}
+</option>
+
+{% endfor %}
+
+</select>
+<select name="show_time">
+
+<option value="">
+All Show Times
+</option>
+
+<option value="9">09 AM</option>
+<option value="12">12 PM</option>
+<option value="15">03 PM</option>
+<option value="18">06 PM</option>
+<option value="21">09 PM</option>
+
+</select>
+<select name="sort">
+
+<option value="">
+Sort By
+</option>
+
+<option value="rating">
+Highest Rated
+</option>
+
+<option value="newest">
+Newest Release
+</option>
+
+<option value="title">
+A-Z
+</option>
+<option value="popular">
+Most Popular
+</option><option value="price_low">
+Price: Low to High
+</option>
+
+<option value="price_high">
+Price: High to Low
+</option>
+</select>
+
+<button type="submit">
+Search
+</button>
+
+</form>
+
+<h3 class="movie-count">
+{{ movie_count }} Movies Found
+</h3>
+
+</section>
+{% if recommended_movies %}
+
+<section class="movies-section">
+
+    <div class="section-header">
+        <h2>Recommended For You</h2>
+    </div>
+
+    <div class="movie-grid">
+
+        {% for movie in recommended_movies %}
+
+        <a href="{% url 'movie_detail' movie.id %}" class="movie-card">
+
+            <div class="poster">
+
+                {% if movie.posters.first %}
+                <img src="{{ movie.posters.first.image.url }}">
+                {% endif %}
+
+            </div>
+
+            <div class="movie-info">
+                <h3>{{ movie.title }}</h3>
+            </div>
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+{% if recently_viewed_movies %}
+
+<section class="movies-section">
+
+    <div class="section-header">
+        <h2>Recently Viewed</h2>
+    </div>
+<div class="stats-bar">
+
+    <div class="stat-box">
+        <h3>{{ movie_count }}</h3>
+        <p>Movies Found</p>
+    </div>
+
+    <div class="stat-box">
+        <h3>{{ genres.count }}</h3>
+        <p>Genres</p>
+    </div>
+
+    <div class="stat-box">
+        <h3>{{ theaters.count }}</h3>
+        <p>Theaters</p>
+    </div>
+
+</div>
+    <div class="movie-grid">
+
+        {% for movie in recently_viewed_movies %}
+
+        <a href="{% url 'movie_detail' movie.id %}"
+           class="movie-card">
+
+            <div class="poster">
+
+                {% if movie.posters.first %}
+                <img src="{{ movie.posters.first.image.url }}">
+                {% endif %}
+
+            </div>
+
+            <div class="movie-info">
+                <h3>{{ movie.title }}</h3>
+            </div>
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+    <section class="movies-section" id="movies">
+
+        <div class="section-header">
+            <h2>Now Showing</h2>
+        </div>
+
+        <div class="movie-grid">
+
+            {% for movie in movies %}
+
+            <a href="{% url 'movie_detail' movie.id %}" class="movie-card">
+
+                <div class="poster">
+
+                    {% if movie.posters.first %}
+                        <img src="{{ movie.posters.first.image.url }}" alt="{{ movie.title }}">
+                    {% else %}
+                        <img src="{% static 'movie/images/default-poster.jpg' %}" alt="{{ movie.title }}">
+                    {% endif %}
+
+                    <div class="poster-overlay">
+
+                        <div class="play-button">
+                            ▶
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="movie-info">
+
+                    <h3>{{ movie.title }}</h3>
+
+                    <p class="genre">
+                        {{ movie.genre }}
+                    </p>
+
+                    <div class="movie-meta">
+
+    <span>
+        ⏱ {{ movie.duration }} mins
+    </span>
+
+    <span class="rating">
+        ⭐ {{ movie.average_rating }}
+    </span>
+
+    {% if movie.showschedule_set.first %}
+    <span class="price">
+        💰 ₹{{ movie.showschedule_set.first.ticket_price }}
+    </span>
+    {% endif %}
+
+</div>
+
+                </div>
+
+            </a>
+
+            {% empty %}
+
+            <h3>No Movies Available</h3>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="pagination">
+
+{% if movies.has_previous %}
+
+<a href="?page={{ movies.previous_page_number }}">
+Previous
+</a>
+
+{% endif %}
+
+<span>
+Page {{ movies.number }}
+of
+{{ movies.paginator.num_pages }}
+</span>
+
+{% if movies.has_next %}
+
+<a href="?page={{ movies.next_page_number }}">
+Next
+</a>
+
+{% endif %}
+
+</div>
+
+    </section>
+<script>
+function toggleProfileMenu() {
+    document
+        .getElementById("profileMenu")
+        .classList
+        .toggle("show");
+}
+
+document.addEventListener("click", function(event) {
+
+    const profile =
+        document.querySelector(".user-profile");
+
+    const menu =
+        document.getElementById("profileMenu");
+
+    if (
+        !profile.contains(event.target)
+    ) {
+        menu.classList.remove("show");
+    }
+});
+</script>
+</body>
+
+</html>

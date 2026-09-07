@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Dashboard</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#050505;
+    color:white;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:40px;
+    color:#ff1744;
+    font-size:42px;
+}
+.revenue-card{
+    position:relative;
+    overflow:hidden;
+}
+
+.revenue-card::before{
+    content:'';
+    position:absolute;
+    top:-50%;
+    left:-50%;
+    width:200%;
+    height:200%;
+    background:linear-gradient(
+        45deg,
+        transparent,
+        rgba(255,23,68,.15),
+        transparent
+    );
+    transform:rotate(45deg);
+    animation:shine 4s infinite;
+}
+
+.icon{
+    font-size:40px;
+    margin-bottom:15px;
+}
+
+@keyframes shine{
+    0%{transform:translateX(-100%) rotate(45deg);}
+    100%{transform:translateX(100%) rotate(45deg);}
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+    margin-bottom:40px;
+}
+
+.card{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,23,68,.3);
+    backdrop-filter:blur(10px);
+    border-radius:20px;
+    padding:30px;
+    text-align:center;
+    transition:.4s;
+}
+
+.card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 0 30px rgba(255,23,68,.5);
+}
+
+.card h2{
+    color:#ff1744;
+    font-size:35px;
+    margin-bottom:10px;
+}
+
+.card p{
+    color:#ccc;
+}
+
+.section-title{
+    color:#ff1744;
+    margin:40px 0 20px;
+    font-size:28px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:rgba(255,255,255,0.05);
+    border-radius:20px;
+    overflow:hidden;
+}
+
+th{
+    background:#ff1744;
+    color:white;
+    padding:18px;
+    text-align:left;
+}
+
+td{
+    padding:18px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+tr:hover{
+    background:rgba(255,23,68,.08);
+}
+
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:40px;
+}
+
+.logo{
+    font-size:32px;
+    font-weight:800;
+    color:white;
+}
+
+.logo span{
+    color:#ff1744;
+}
+
+.admin-badge{
+    background:#ff1744;
+    padding:10px 20px;
+    border-radius:30px;
+    font-weight:600;
+}
+canvas{
+    max-height:400px;
+}
+.hero{
+    text-align:center;
+    padding:40px;
+    border-radius:25px;
+    margin-bottom:40px;
+    background:linear-gradient(
+        135deg,
+        #ff1744,
+        #8e24aa
+    );
+}
+.hero h1{
+    color:white;
+    font-size:60px;
+    font-weight:800;
+    text-shadow:
+        0 0 20px rgba(255,255,255,.5);
+}
+.hero p{
+    margin-top:10px;
+    color:#fff;
+}
+.actions{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+}
+
+.actions a{
+    background:#ff1744;
+    color:white;
+    padding:12px 20px;
+    text-decoration:none;
+    border-radius:12px;
+    font-weight:600;
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>🎬 MovieVerse Admin Dashboard</h1>
+    <p>
+        Manage Movies, Bookings, Revenue, Users & Analytics
+    </p>
+</div>
+<div class="actions">
+
+<a href="http://127.0.0.1:8000/admin/users/movie/add/">🎬 Add Movie</a>
+
+<a href="http://127.0.0.1:8000/admin/users/showschedule/add/">📅 Add Show</a>
+
+<a href="{% url 'export_bookings' %}">
+📊 Export CSV
+</a>
+
+<a href="http://127.0.0.1:8000/admin/auth/user/">
+👥 Manage Users
+</a>
+
+</div>
+<div class="cards">
+
+<div class="card revenue-card">
+    
+    <h2>₹{{ daily_revenue }}</h2>
+    <p>Daily Revenue</p>
+</div>
+<div class="card">
+<h2>₹{{ weekly_revenue }}</h2>
+<p>Weekly Revenue</p>
+</div>
+
+<div class="card">
+<h2>₹{{ monthly_revenue }}</h2>
+<p>Monthly Revenue</p>
+</div>
+
+<div class="card">
+<h2>₹{{ yearly_revenue }}</h2>
+<p>Yearly Revenue</p>
+</div>
+
+</div>
+
+<br>
+<h2 class="section-title">
+Cancellation & Refund Analytics
+</h2>
+
+<div class="cards">
+
+<div class="card">
+<h2>{{ cancelled_bookings }}</h2>
+<p>Cancelled Bookings</p>
+</div>
+
+<div class="card">
+<h2>{{ refund_count }}</h2>
+<p>Total Refunds</p>
+</div>
+
+<div class="card">
+<h2>₹{{ refund_amount }}</h2>
+<p>Refund Amount</p>
+</div>
+
+</div>
+<form method="get"
+      style="margin-bottom:30px;">
+
+<input
+type="date"
+name="start_date">
+
+<input
+type="date"
+name="end_date">
+
+<button
+type="submit">
+
+Filter
+
+</button>
+
+</form>
+<div class="cards">
+
+<div class="card">
+<h2>{{ total_bookings }}</h2>
+<p>Total Bookings</p>
+</div>
+
+<div class="card">
+<h2>{{ total_users }}</h2>
+<p>Total Users</p>
+</div>
+
+</div>
+
+<h2>Most Booked Movies</h2>
+
+<table>
+
+<tr>
+<th>Movie</th>
+<th>Bookings</th>
+</tr>
+
+{% for movie in most_booked_movies %}
+
+<tr>
+<td>{{ movie.movie__title }}</td>
+<td>{{ movie.total }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+<h2 class="section-title">Recent Users</h2>
+
+<table>
+<tr>
+<th>Username</th>
+<th>Date Joined</th>
+</tr>
+
+{% for user in recent_users %}
+<tr>
+<td>{{ user.username }}</td>
+<td>{{ user.date_joined }}</td>
+</tr>
+{% endfor %}
+</table>
+<h2 class="section-title">Peak Booking Hours</h2>
+
+<table>
+<tr>
+<th>Hour</th>
+<th>Bookings</th>
+</tr>
+
+{% for item in peak_hours %}
+<tr>
+<td>{{ item.hour }}:00</td>
+<td>{{ item.total }}</td>
+</tr>
+{% endfor %}
+</table>
+<h2 class="section-title">Top Performing Theaters</h2>
+
+<table>
+<tr>
+<th>Theater</th>
+<th>Bookings</th>
+</tr>
+
+{% for theater in top_theaters %}
+<tr>
+<td>{{ theater.schedule__theater__name }}</td>
+<td>{{ theater.total }}</td>
+</tr>
+{% endfor %}
+</table>
+<a href="{% url 'export_bookings' %}">
+    <button>
+        Export CSV
+    </button>
+</a>
+<h2 class="section-title">
+Occupancy Percentage
+</h2>
+
+<table>
+
+<tr>
+    <th>Theater</th>
+    <th>Occupancy</th>
+</tr>
+
+{% for theater in occupancy_data %}
+
+<tr>
+    <td>{{ theater.name }}</td>
+    <td>{{ theater.occupancy }}%</td>
+</tr>
+
+{% endfor %}
+
+</table>
+<h2 class="section-title">
+Revenue Analytics
+</h2>
+
+<div style="
+background:rgba(255,255,255,0.05);
+padding:30px;
+border-radius:20px;
+margin-top:20px;
+">
+
+<canvas id="revenueChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const dailyRevenue = "{{ daily_revenue|default:0 }}";
+const weeklyRevenue = "{{ weekly_revenue|default:0 }}";
+const monthlyRevenue = "{{ monthly_revenue|default:0 }}";
+const yearlyRevenue = "{{ yearly_revenue|default:0 }}";
+
+const ctx = document.getElementById('revenueChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Daily', 'Weekly', 'Monthly', 'Yearly'],
+        datasets: [{
+            label: 'Revenue (₹)',
+            data: [
+                Number(dailyRevenue),
+                Number(weeklyRevenue),
+                Number(monthlyRevenue),
+                Number(yearlyRevenue)
+            ],
+            backgroundColor: [
+                '#ff1744',
+                '#ff4569',
+                '#ff6384',
+                '#ff8fab'
+            ],
+            borderRadius: 10
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                labels: {
+                    color: 'white'
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    color: 'white'
+                }
+            },
+            y: {
+                ticks: {
+                    color: 'white'
+                }
+            }
+        }
+    }
+});
+</script>
+</body>
+</html>

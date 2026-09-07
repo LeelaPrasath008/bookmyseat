@@ -1,0 +1,54 @@
+print("SUCCESS VIEW HIT")
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Successful</title>
+    <style>
+        body{
+            background:#050505;
+            color:white;
+            font-family:Poppins,sans-serif;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .success-card{
+            background:#111;
+            padding:50px;
+            border-radius:20px;
+            text-align:center;
+            box-shadow:0 0 40px rgba(0,255,136,.3);
+        }
+
+        h1{
+            color:#00ff88;
+        }
+
+        a{
+            display:inline-block;
+            margin-top:20px;
+            padding:12px 25px;
+            background:#ff1744;
+            color:white;
+            text-decoration:none;
+            border-radius:10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="success-card">
+    <h1>Payment Successful</h1>
+    <p>Your booking has been confirmed.</p>
+
+    <a href="{% url 'booking_history' %}">
+        View Booking History
+    </a>
+</div>
+signature = request.GET.get(
+    "signature"
+)
+</body>
+</html>

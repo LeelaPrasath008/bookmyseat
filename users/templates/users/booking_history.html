@@ -1,0 +1,350 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Booking History</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background:#0f0f0f;
+            color:white;
+            padding:40px;
+            min-height:100vh;
+        }
+
+        h1{
+            text-align:center;
+            color:#ff1744;
+            margin-bottom:40px;
+            font-size:40px;
+        }
+
+        .section-title{
+            margin:40px 0 20px;
+            color:#00e5ff;
+            font-size:28px;
+            border-left:5px solid #00e5ff;
+            padding-left:15px;
+        }
+
+        .back-btn{
+            display:inline-block;
+            padding:12px 25px;
+            background:#ff1744;
+            color:white;
+            text-decoration:none;
+            border-radius:10px;
+            font-weight:600;
+            transition:.3s;
+            margin-bottom:30px;
+        }
+
+        .back-btn:hover{
+            background:#ff4569;
+            transform:translateY(-2px);
+        }
+
+        .card{
+            background:linear-gradient(
+                135deg,
+                #1a1a1a,
+                #242424
+            );
+            border:1px solid #333;
+            border-radius:18px;
+            padding:25px;
+            margin-bottom:20px;
+            transition:.3s;
+            box-shadow:0 8px 20px rgba(0,0,0,.25);
+        }
+
+        .card:hover{
+            transform:translateY(-5px);
+            box-shadow:0 0 25px rgba(255,23,68,.35);
+        }
+
+        .movie-title{
+            color:#ff1744;
+            margin-bottom:15px;
+            font-size:24px;
+            font-weight:700;
+        }
+
+        .info{
+            margin-bottom:10px;
+            color:#ddd;
+            line-height:1.8;
+        }
+
+        .info strong{
+            color:white;
+        }
+
+        .success{
+            color:#00e676;
+            font-weight:700;
+        }
+
+        .pending{
+            color:#ffc107;
+            font-weight:700;
+        }
+
+        .failed{
+            color:#ff5252;
+            font-weight:700;
+        }
+
+        .download-btn{
+            display:inline-block;
+            margin-top:15px;
+            padding:12px 20px;
+            background:#00c853;
+            color:white;
+            text-decoration:none;
+            border-radius:10px;
+            font-weight:600;
+            transition:.3s;
+        }
+
+        .download-btn:hover{
+            background:#00e676;
+            transform:translateY(-2px);
+        }
+
+        .empty-card{
+            background:#1a1a1a;
+            padding:20px;
+            border-radius:15px;
+            text-align:center;
+            color:#aaa;
+        }
+
+        .badge{
+            display:inline-block;
+            padding:5px 12px;
+            border-radius:20px;
+            font-size:13px;
+            font-weight:600;
+            margin-left:5px;
+        }
+
+        .badge-success{
+            background:#00e67622;
+            color:#00e676;
+        }
+
+        .badge-warning{
+            background:#ffc10722;
+            color:#ffc107;
+        }
+
+        .badge-danger{
+            background:#ff525222;
+            color:#ff5252;
+        }
+        .booking-card{
+            display:flex;
+            gap:25px;
+            align-items:flex-start;
+        }
+
+        .poster{
+            width:180px;
+            height:260px;
+            object-fit:cover;
+            border-radius:15px;
+            box-shadow:0 0 15px rgba(255,23,68,.4);
+        }
+
+        .details{
+            flex:1;
+        }
+    </style>
+
+</head>
+<body>
+
+<a href="{% url 'movie_list' %}" class="back-btn">
+    ← Back to Movies
+</a>
+
+<h1>🎟 My Booking History</h1>
+
+<!-- BOOKINGS -->
+
+<h2 class="section-title">Bookings</h2>
+
+{% for booking in bookings %}
+
+<div class="card booking-card">
+
+    {% if booking.movie.posters.first %}
+        <img
+            src="{{ booking.movie.posters.first.image.url }}"
+            class="poster"
+            alt="{{ booking.movie.title }}">
+    {% endif %}
+
+    <div class="details">
+
+        <div class="movie-title">
+            {{ booking.movie.title }}
+        </div>
+
+    <div class="info">
+        <strong>Booking Date:</strong>
+        {{ booking.booking_date }}
+    </div>
+
+    <div class="info">
+        <strong>Booking Reference:</strong>
+        {{ booking.booking_reference }}
+    </div>
+
+    <div class="info">
+        <strong>Theater:</strong>
+        {{ booking.schedule.theater.name }}
+    </div>
+
+    <div class="info">
+        <strong>Location:</strong>
+        {{ booking.schedule.theater.location }}
+    </div>
+
+    <div class="info">
+        <strong>Show Time:</strong>
+        {{ booking.schedule.show_time }}
+    </div>
+
+    <div class="info">
+        <strong>Seats:</strong>
+        {{ booking.booked_seats|default:"Not Available" }}
+    </div>
+
+    <div class="info">
+        <strong>Payment Reference:</strong>
+        {{ booking.payment_reference|default:"Not Available" }}
+    </div>
+
+    <div class="info">
+        <strong>Status:</strong>
+
+        {% if booking.is_confirmed %}
+            <span class="badge badge-success">
+                Confirmed
+            </span>
+        {% else %}
+            <span class="badge badge-warning">
+                Pending
+            </span>
+        {% endif %}
+    </div>
+    {% if payment.status == "failed" %}
+
+<a href="{% url 'create_payment' payment.booking.id %}"
+   class="retry-btn">
+   Retry Payment
+</a>
+
+{% endif %}
+
+    {% if booking.ticket_pdf %}
+    <a href="{% url 'download_ticket' booking.id %}"
+       class="download-btn">
+       🎟 Download Ticket
+    </a>
+    {% endif %}
+</div>
+</div>
+
+{% empty %}
+
+<div class="empty-card">
+    No bookings found.
+</div>
+
+{% endfor %}
+
+<!-- PAYMENTS -->
+
+<h2 class="section-title">Payments</h2>
+
+{% for payment in payments %}
+
+<div class="card booking-card">
+
+    {% if payment.booking.movie.posters.first %}
+        <img
+            src="{{ payment.booking.movie.posters.first.image.url }}"
+            class="poster"
+            alt="{{ payment.booking.movie.title }}">
+    {% endif %}
+
+    <div class="details">
+
+    <div class="info">
+        <strong>Amount:</strong>
+        ₹{{ payment.amount }}
+    </div>
+
+    <div class="info">
+        <strong>Transaction ID:</strong>
+        {{ payment.transaction_id }}
+    </div>
+
+    <div class="info">
+        <strong>Payment Date:</strong>
+        {{ payment.created_at }}
+    </div>
+
+    <div class="info">
+        <strong>Status:</strong>
+
+        {% if payment.status == "success" %}
+            <span class="badge badge-success">
+                Success
+            </span>
+
+        {% elif payment.status == "pending" %}
+            <span class="badge badge-warning">
+                Pending
+            </span>
+
+        {% else %}
+            <span class="badge badge-danger">
+                Failed
+            </span>
+        {% endif %}
+    </div>
+
+    {% if payment.status == "success" and payment.booking.ticket_pdf %}
+    <a href="{% url 'download_ticket' payment.booking.id %}"
+       class="download-btn">
+       📄 Download Ticket
+    </a>
+    {% endif %}
+
+</div>
+</div>
+
+{% empty %}
+
+<div class="empty-card">
+    No payments found.
+</div>
+
+{% endfor %}
+
+</body>
+</html>

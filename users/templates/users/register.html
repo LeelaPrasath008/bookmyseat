@@ -1,0 +1,399 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MovieVerse Register</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,.85),
+        rgba(0,0,0,.9)
+    ),
+    url("{% static 'movie/images/cinema-bg.jpg' %}");
+
+    background-size:cover;
+    background-position:center;
+}
+
+body::before{
+    content:'';
+    position:absolute;
+    width:600px;
+    height:600px;
+    background:#ff1744;
+    filter:blur(250px);
+    opacity:.15;
+    top:-150px;
+    left:-150px;
+}
+
+body::after{
+    content:'';
+    position:absolute;
+    width:500px;
+    height:500px;
+    background:#ff1744;
+    filter:blur(250px);
+    opacity:.12;
+    bottom:-150px;
+    right:-150px;
+}
+
+/* Main Container */
+
+.container{
+    width:1100px;
+    max-width:95%;
+    display:flex;
+    overflow:hidden;
+    border-radius:30px;
+    height: 730px;
+    background:rgba(15,15,15,.85);
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+    0 0 50px rgba(255,23,68,.25);
+}
+
+.left-panel{
+    width:50%;
+    position:relative;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,.3),
+        rgba(0,0,0,.7)
+    ),
+    url("{% static 'movie/images/movie-poster.jpg' %}");
+
+    background-size:cover;
+    background-position:center;
+}
+
+.overlay{
+    position:absolute;
+    inset:0;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;   /* Vertical center */
+    align-items:center;       /* Horizontal center */
+
+    text-align:center;
+    padding:50px;
+}
+
+.overlay h1{
+    font-size:4rem;
+    font-weight:800;
+    color:white;
+}
+
+.overlay h1 span{
+    color:#ff1744;
+}
+
+.overlay p{
+    margin-top:15px;
+    color:#ddd;
+    line-height:1.8;
+    max-width:500px;
+    font-size:18px;
+}
+/* Right Section */
+
+.right-panel{
+    width:50%;
+    padding:40px 50px;
+}
+
+.logo{
+    text-align:center;
+    font-size:2.8rem;
+    font-weight:800;
+    color:white;
+}
+
+.logo span{
+    color:#ff1744;
+}
+
+.subtitle{
+    text-align:center;
+    color:#aaa;
+    margin:10px 0 35px;
+}
+
+.form-group{
+    margin-bottom:18px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    color:white;
+    font-weight:500;
+}
+
+input{
+    width:100%;
+    padding:16px;
+
+    border:none;
+    border-radius:15px;
+
+    background:#1b1b1b;
+    color:white;
+
+    font-size:15px;
+}
+
+input:focus{
+    outline:none;
+
+    box-shadow:
+    0 0 20px rgba(255,23,68,.4);
+}
+
+.register-btn{
+    width:100%;
+    padding:18px;
+
+    margin-top:15px;
+
+    border:none;
+    border-radius:15px;
+
+    background:#ff1744;
+    color:white;
+
+    font-size:18px;
+    font-weight:600;
+
+    cursor:pointer;
+    transition:.3s;
+}
+
+.register-btn:hover{
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 0 30px rgba(255,23,68,.6);
+}
+
+.login-link{
+    text-align:center;
+    margin-top:20px;
+}
+
+.login-link a{
+    color:#ff1744;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.errorlist{
+    list-style:none;
+    color:#ff5252;
+    margin-bottom:10px;
+}
+.error-box{
+    background:#ff1744;
+    color:white;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:20px;
+    font-size:14px;
+}
+
+.error-box p{
+    margin:5px 0;
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+    .left-panel{
+        display:none;
+    }
+
+    .right-panel{
+        width:100%;
+        padding:40px 25px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT -->
+
+    <div class="left-panel">
+
+        <div class="overlay">
+
+            <h1>
+                Movie<span>Verse</span>
+            </h1>
+
+            <p>
+                Join MovieVerse and unlock
+                a world of blockbuster movies,
+                seamless bookings and premium cinema experiences.
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="right-panel">
+
+        <div class="logo">
+            Movie<span>Verse</span>
+        </div>
+
+        <div class="subtitle">
+            Create Your Account 🎬
+        </div>
+
+        <form method="post">
+
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="error-box">
+        {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+        <label>Username</label>
+
+        <input
+            type="text"
+            name="username"
+            placeholder="Enter username"
+            value="{{ form.username.value|default:'' }}"
+            required
+        >
+
+        {% for error in form.username.errors %}
+            <small style="color:#ff5252;">
+                {{ error }}
+            </small>
+        {% endfor %}
+    </div>
+
+    <div class="form-group">
+        <label>Email</label>
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Enter email"
+            value="{{ form.email.value|default:'' }}"
+            required
+        >
+
+        {% for error in form.email.errors %}
+            <small style="color:#ff5252;">
+                {{ error }}
+            </small>
+        {% endfor %}
+    </div>
+
+    <div class="form-group">
+        <label>Password</label>
+
+        <input
+            type="password"
+            name="password1"
+            placeholder="Create password"
+            required
+        >
+
+        {% for error in form.password1.errors %}
+            <small style="color:#ff5252;">
+                {{ error }}
+            </small>
+        {% endfor %}
+    </div>
+
+    <div class="form-group">
+        <label>Confirm Password</label>
+
+        <input
+            type="password"
+            name="password2"
+            placeholder="Confirm password"
+            required
+        >
+
+        {% for error in form.password2.errors %}
+            <small style="color:#ff5252;">
+                {{ error }}
+            </small>
+        {% endfor %}
+    </div>
+
+    <button
+        type="submit"
+        class="register-btn">
+
+        Create Account
+
+    </button>
+
+</form>
+
+        <div class="login-link">
+
+            Already have an account?
+
+            <a href="{% url 'login' %}">
+                Login Here
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

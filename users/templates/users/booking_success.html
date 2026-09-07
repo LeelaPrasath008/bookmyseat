@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Booking Success</title>
+</head>
+<body style="background:black;color:white;text-align:center;padding:100px;">
+
+    <h1>✅ Booking Successful</h1>
+
+    <h2>{{ movie.title }}</h2>
+
+    <p>Seats Reserved:</p>
+
+    {% for seat in seats %}
+        <p>{{ seat.seat_number }}</p>
+    {% endfor %}
+
+    <a href="{% url 'movie_list' %}">
+        Back to Movies
+    </a>
+
+</body>
+</html>
