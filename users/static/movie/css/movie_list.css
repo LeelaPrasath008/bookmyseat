@@ -806,44 +806,69 @@ color:white;
 .logout-btn:hover{
     background:#ff1744;
     color:white;
-}/* MOBILE RESPONSIVE */
-
-@media screen and (max-width: 768px){
+}
+/* MOBILE RESPONSIVE */
+@media screen and (max-width:768px){
 
     body{
         overflow-x:hidden;
     }
 
+    /* NAVBAR */
+
     .navbar{
+        position:relative;
         flex-direction:column;
-        gap:10px;
         padding:10px;
+        gap:10px;
     }
 
     .nav-links{
+        display:flex;
         flex-wrap:wrap;
         justify-content:center;
+        gap:10px;
     }
 
     .auth-buttons{
         display:flex;
-        gap:10px;
         justify-content:center;
+        gap:10px;
+    }
+
+    /* HERO */
+
+    .hero{
+        height:auto;
+        min-height:auto;
     }
 
     .hero-wrapper{
+        width:100%;
         flex-direction:column;
-        padding:15px;
+        gap:20px;
+        padding:20px;
     }
 
     .hero-content{
-        width:100%;
+        max-width:100%;
+        padding:30px 15px;
         text-align:center;
+    }
+
+    .hero-content h1{
+        font-size:2rem;
+    }
+
+    .hero-content p{
+        font-size:14px;
     }
 
     .featured-poster{
         width:100%;
-        margin-top:20px;
+        max-width:300px;
+        height:auto;
+        margin:auto;
     }
 
     .featured-poster img{
@@ -851,16 +876,17 @@ color:white;
         height:auto;
     }
 
-    .stats-strip{
-        display:grid;
-        grid-template-columns:1fr;
-        gap:10px;
+    /* FILTER */
+
+    .filter-section{
+        width:95%;
+        margin:20px auto;
+        padding:20px;
     }
 
     .filter-form{
         display:flex;
         flex-direction:column;
-        gap:10px;
     }
 
     .filter-form input,
@@ -869,28 +895,42 @@ color:white;
         width:100%;
     }
 
+    /* STATS */
+
+    .stats-strip{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    /* MOVIES */
+
+    .movies-section{
+        padding:20px;
+    }
+
     .movie-grid{
-        display:grid;
         grid-template-columns:1fr;
-        gap:20px;
     }
 
     .movie-card{
         width:100%;
+        max-width:350px;
+        margin:auto;
     }
 
     .poster img{
-        width:100%;
-        height:auto;
+        height:400px;
     }
 
-    .user-profile{
-        width:100%;
+    /* PROFILE */
+
+    .profile-info{
+        display:none;
     }
 
     .profile-menu{
-        right:0;
-        left:0;
         width:100%;
+        left:0;
+        right:0;
     }
 }
