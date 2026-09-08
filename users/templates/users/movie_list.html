@@ -39,14 +39,6 @@
 </div>
 {% if user.is_authenticated %}
 
-<div class="user-menu">
-    Welcome {{ user.username }}
-
-    <a href="{% url 'logout' %}" class="nav-btn">
-        Logout
-    </a>
-</div>
-
 {% else %}
 
 <div class="auth-buttons">
