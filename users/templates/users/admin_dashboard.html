@@ -193,15 +193,15 @@ canvas{
 </div>
 <div class="actions">
 
-<a href="/admin/users/movie/add/">🎬 Add Movie</a>
+<a href="{% url 'admin:index' %}">🎬 Add Movie</a>
 
-<a href="/admin/users/showschedule/add/">📅 Add Show</a>
+<a href="{% url 'admin:index' %}">📅 Add Show</a>
 
 <a href="{% url 'export_bookings' %}">
 📊 Export CSV
 </a>
 
-<a href="/admin/auth/user/">
+<a href="{% url 'admin:index' %}">
 👥 Manage Users
 </a>
 
