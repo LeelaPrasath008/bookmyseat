@@ -74,7 +74,7 @@ body{
 .auth-link a{
     color:#ff1744;
     text-decoration:none;
-    pointer-events:none;
+    pointer-events:auto;
 }
 @media screen and (max-width:768px){
 
