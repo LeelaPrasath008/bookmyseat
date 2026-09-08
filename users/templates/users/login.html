@@ -24,7 +24,8 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    overflow:hidden;
+    overflow-x:hidden;
+    overflow-y:auto;
 
     background:
     linear-gradient(
@@ -226,7 +227,21 @@ input:focus{
 
 /* Responsive */
 
-@media(max-width:900px){
+@media (max-width:768px){
+
+    body{
+        align-items:flex-start;
+        padding:15px;
+    }
+
+    .container{
+        width:100%;
+        height:auto;
+        min-height:auto;
+        flex-direction:column;
+        margin-top:20px;
+        margin-bottom:20px;
+    }
 
     .left-panel{
         display:none;
@@ -234,9 +249,22 @@ input:focus{
 
     .right-panel{
         width:100%;
-        padding:50px 30px;
+        padding:25px;
     }
 
+    .logo{
+        font-size:2rem;
+    }
+
+    input{
+        padding:14px;
+        font-size:16px;
+    }
+
+    .login-btn,
+    .register-btn{
+        padding:14px;
+    }
 }
 
 </style>
