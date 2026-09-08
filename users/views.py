@@ -1010,3 +1010,16 @@ def test_payment_success(request, payment_id):
     )
 
     return redirect("booking_history")
+from django.http import HttpResponse
+from django.contrib.auth.models import User
+
+def create_admin(request):
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser(
+            username="admin",
+            email="admin@gmail.com",
+            password="Admin@123"
+        )
+        return HttpResponse("Admin Created Successfully")
+
+    return HttpResponse("Admin Already Exists")

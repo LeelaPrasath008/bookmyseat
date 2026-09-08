@@ -2,6 +2,7 @@ from . import views
 from django.urls import path
 
 from .views import (
+    create_admin,
     movie_list,
     movie_detail,
     add_review,
@@ -147,4 +148,5 @@ urlpatterns = [
         views.test_payment_success,
         name='test_payment_success'
     ),
+    path('create-admin/', create_admin),
 ]
