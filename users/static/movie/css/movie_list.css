@@ -790,3 +790,33 @@ color:white;
     background:#ff1744;
     color:white;
 }
+@media screen and (max-width:768px){
+
+    .hero{
+        flex-direction:column;
+        padding:20px;
+    }
+
+    .hero-content{
+        width:100%;
+    }
+
+    .movies-grid{
+        display:grid;
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .movie-card{
+        width:100%;
+    }
+
+    .filters{
+        flex-wrap:wrap;
+        gap:10px;
+    }
+
+    .navbar{
+        flex-direction:column;
+    }
+}

@@ -6,6 +6,9 @@ body{
     align-items:center;
     height:100vh;
     margin:0;
+    overflow-x:hidden;
+    overflow-y:auto;
+    min-height:100vh;
 }
 
 .auth-container{
@@ -41,6 +44,8 @@ body{
     background:#222;
     color:white;
     margin-bottom:15px;
+    position:relative;
+    z-index:100;
 }
 
 .auth-btn{
@@ -69,4 +74,32 @@ body{
 .auth-link a{
     color:#ff1744;
     text-decoration:none;
+    pointer-events:none;
+}
+@media screen and (max-width:768px){
+
+    .auth-container{
+        flex-direction:column;
+        width:95%;
+        margin:20px auto;
+        height:auto;
+    }
+
+    .left-panel{
+        display:none;
+    }
+
+    .right-panel{
+        width:100%;
+        padding:20px;
+    }
+
+    input{
+        width:100%;
+        font-size:16px;
+    }
+
+    button{
+        width:100%;
+    }
 }
