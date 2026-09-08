@@ -172,7 +172,14 @@ canvas{
     flex-wrap:wrap;
     margin-bottom:30px;
 }
+.home-card{
+    background:#e50914;
+    color:white;
+}
 
+.home-card:hover{
+    background:#ff1744;
+}
 .actions a{
     background:#ff1744;
     color:white;
@@ -204,7 +211,9 @@ canvas{
 <a href="{% url 'admin:index' %}">
 👥 Manage Users
 </a>
-
+<a href="{% url 'movie_list' %}" class="admin-card home-card">
+    🏠 Home
+</a>
 </div>
 <div class="cards">
 
