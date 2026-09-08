@@ -37,7 +37,31 @@
     </a>
 
 </div>
+{% if user.is_authenticated %}
 
+<div class="user-menu">
+    Welcome {{ user.username }}
+
+    <a href="{% url 'logout' %}" class="nav-btn">
+        Logout
+    </a>
+</div>
+
+{% else %}
+
+<div class="auth-buttons">
+
+    <a href="{% url 'login' %}" class="nav-btn">
+        Login
+    </a>
+
+    <a href="{% url 'register' %}" class="nav-btn register-btn">
+        Sign Up
+    </a>
+
+</div>
+
+{% endif %}
 {% if user.is_authenticated %}
 <div class="user-profile">
 
